@@ -19,6 +19,13 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
     private Compress compress;
 
+
+    public RpcMessageEncoder(IdGenerator idGenerator, Serializer serializer, Compress compress) {
+        this.idGenerator = idGenerator;
+        this.serializer = serializer;
+        this.compress = compress;
+    }
+
     public RpcMessageEncoder() {
         this.idGenerator = new BaseJdkIdGenerator();
     }
@@ -41,11 +48,11 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
             body = compress.compress(serializedData);
             allLength += body.length;
         }
-        if(body!=null){
+        if (body != null) {
             byteBuf.writeBytes(body);
         }
-        int writerByte=byteBuf.writerIndex();
-        byteBuf.writerIndex(writerByte-allLength+RpcConstants.MAGIC.length);
+        int writerByte = byteBuf.writerIndex();
+        byteBuf.writerIndex(writerByte - allLength + RpcConstants.MAGIC.length);
         byteBuf.writeInt(allLength);
         byteBuf.writerIndex(writerByte);
     }
